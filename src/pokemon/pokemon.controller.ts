@@ -17,7 +17,7 @@ export class PokemonController {
   @Get()
   findAll(@Query() paginationDto: PaginationDto) {
 
-    console.log(paginationDto);
+    // console.log(paginationDto);
     return this.pokemonService.findAll(paginationDto);
   }
 
@@ -27,12 +27,12 @@ export class PokemonController {
   }
 
   @Patch(':term')
-update(
-  @Param('term') term: string,
-  @Body() updatePokemonDto: UpdatePokemonDto,
-) {
-  return this.pokemonService.update(term, updatePokemonDto);
-}
+  update(
+    @Param('term') term: string,
+    @Body() updatePokemonDto: UpdatePokemonDto,
+  ) {
+    return this.pokemonService.update(term, updatePokemonDto);
+  }
 
   @Delete(':id')
   remove(@Param('id', ParseMongoIdPipe) id: string) {

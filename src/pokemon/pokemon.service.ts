@@ -94,7 +94,7 @@ async update(term: string, updatePokemonDto: UpdatePokemonDto) {
     if(error.code === 11000) {
       throw new BadRequestException(`Pokemon exists in db "${JSON.stringify(error.value)}"`)
     }
-    console.log(error);
+    // console.log(error);
     throw new InternalServerErrorException(`Can't create Pokemon`)  
   }
 }
