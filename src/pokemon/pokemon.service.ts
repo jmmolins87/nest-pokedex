@@ -7,14 +7,20 @@ import { CreatePokemonDto } from './dto/create-pokemon.dto.js';
 import { UpdatePokemonDto } from './dto/update-pokemon.dto.js';
 import { PokemonEntity } from './entities/pokemon.entity.js';
 import { PaginationDto } from '../common/dto/pagination.dtop.js';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class PokemonService {
 
+  private defaultLimit: number;
+
   constructor(
     @InjectModel(PokemonEntity.name)
-    private readonly pokemonModel: Model<PokemonEntity>
-  ) { }
+    private readonly pokemonModel: Model<PokemonEntity>,
+    private readonly configService: ConfigService
+  ) { 
+    this.defaultLimit = this.configService.get<number>('defaultLimit') ?? 5;
+  }
 
 async create(createPokemonDto: CreatePokemonDto) {
     createPokemonDto.name = createPokemonDto.name.toLocaleLowerCase();
@@ -29,7 +35,8 @@ async create(createPokemonDto: CreatePokemonDto) {
 
   findAll(paginationDto: PaginationDto) {
 
-    const {limit=10, offset=0} = paginationDto;
+    
+    const { limit = this.defaultLimit, offset = 0 } = paginationDto;
 
     return this.pokemonModel.find()
     .limit(limit)
@@ -94,7 +101,7 @@ async update(term: string, updatePokemonDto: UpdatePokemonDto) {
     if(error.code === 11000) {
       throw new BadRequestException(`Pokemon exists in db "${JSON.stringify(error.value)}"`)
     }
-    console.log(error);
+    // console.log(error);
     throw new InternalServerErrorException(`Can't create Pokemon`)  
   }
 }
