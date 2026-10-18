@@ -9,22 +9,24 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { CommonModule } from './common/common.module.js';
 import { SeedModule } from './seed/seed.module.js';
 import { EnvConfiguration } from './config/app.config.js';
+import { JoiValidationShchema } from './config/joi.validation.js';
 
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [EnvConfiguration]
+      load: [EnvConfiguration],
+      validationSchema: JoiValidationShchema
     }),
     ServeStaticModule.forRoot({
-      rootPath: join(import.meta.dirname, '..', 'public')
+      rootPath: join(import.meta.dirname, '..', 'public'),
     }),
     MongooseModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
         uri: config.getOrThrow<string>('MONGODB'),
-      })
+      }),
     }),
     PokemonModule,
     CommonModule,
